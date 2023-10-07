@@ -16,19 +16,27 @@ int isMouseRButtonPressed = 0;
 bool isMouseInRange = 0;
 
 // 마우스가 도형 범위 내에 있는지 확인
-// err: 시작 위치보다 끝 위치가 왼쪽에 있다면 이동 안 됨
 bool IsMouseInsideShape(POINT mousePos, POINT shapeStart, POINT shapeEnd)
 {
-	return (mousePos.x >= shapeStart.x && mousePos.x <= shapeEnd.x &&
-		mousePos.y >= shapeStart.y && mousePos.y <= shapeEnd.y);
-}
+	if (endPoint.x > startPoint.x && endPoint.y > startPoint.y) {
+		return (mousePos.x >= shapeStart.x && mousePos.x <= shapeEnd.x &&
+			mousePos.y >= shapeStart.y && mousePos.y <= shapeEnd.y);
+	}
+	else if (endPoint.x > startPoint.x && endPoint.y < startPoint.y) {
+		return (mousePos.x >= shapeStart.x && mousePos.x <= shapeEnd.x &&
+			mousePos.y <= shapeStart.y && mousePos.y >= shapeEnd.y);
+	}
+	else if (endPoint.x < startPoint.x && endPoint.y > startPoint.y) {
+		return (mousePos.x <= shapeStart.x && mousePos.x >= shapeEnd.x &&
+			mousePos.y >= shapeStart.y && mousePos.y <= shapeEnd.y);
+	}
+	else {
+		return (mousePos.x <= shapeStart.x && mousePos.x >= shapeEnd.x &&
+			mousePos.y <= shapeStart.y && mousePos.y >= shapeEnd.y);
+	}
 
-// 판단 기준 세우기
-//bool IsMouseInsideShape(POINT mousePos, POINT shapeStart, POINT shapeEnd)
-//{
-//	return (mousePos.x >= shapeStart.x && mousePos.x <= shapeEnd.x &&
-//		mousePos.y >= shapeStart.y && mousePos.y <= shapeEnd.y);
-//}
+
+}
 
 // 윈도우의 이벤트를 처리하는 콜백(Callback) 함수.
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -104,6 +112,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		lastMousePos.x = LOWORD(lParam);
 		lastMousePos.y = HIWORD(lParam);
 
+		
 		if (IsMouseInsideShape(lastMousePos, startPoint, endPoint))
 		{
 			isMouseInRange = 1;

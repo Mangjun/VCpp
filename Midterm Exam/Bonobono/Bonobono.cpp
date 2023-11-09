@@ -1,4 +1,4 @@
-﻿#include <windows.h>
+﻿#include "../Ryan/yuhanCG.h"
 
 // 그릴 수 있는 도형들
 enum Draw { BOX, CIRCLE, CUBE, BONOBONO, RYAN, NON };
@@ -19,7 +19,8 @@ bool isMoving = false; // 우클릭 여부
 bool isInBox = false; // 커서가 범위 안에 있는지 여부
 bool isCircleSize = false; // 원 우클릭 여부
 bool isCubeSize = false; // 큐브 좌클릭 여부
-bool isSpacebar = false; // 스페이스바 여부
+//bool isSpacebar = false; // 스페이스바 여부
+int blink = 0;
 
 // 큰 좌표와 작은 좌표 구하는 함수
 void MaxMin() {
@@ -155,198 +156,7 @@ void DrawCube(HDC hdc, const POINT start, const POINT end) {
     }
 }
 
-// 보노보노 그리는 함수
-void DrawBonobono(HDC hdc) {
-    //MaxMin();
-    min.x = 280;
-    max.x = 480;
-    min.y = 150;
-    max.y = 350;
-
-    //if (isDrawArea()) {
-    HBRUSH hBrush = CreateSolidBrush(RGB(127, 200, 255));
-    SelectObject(hdc, hBrush);
-    // 얼굴 그리기
-    Ellipse(hdc, min.x, min.y, max.x, max.y);
-
-    HBRUSH hBrush2 = CreateSolidBrush(RGB(0, 0, 0));
-    HBRUSH hBrushWhite = CreateSolidBrush(RGB(255, 255, 255));
-    SelectObject(hdc, hBrush2);
-    // 스페이스바가 안 눌렸을 때
-    if (!isSpacebar) {
-        Ellipse(hdc, min.x + abs(min.x - max.x) / 6, min.y + abs(min.y - max.y) / 3,
-            min.x + abs(min.x - max.x) / 6 + 10, min.y + abs(min.y - max.y) / 3 + 20);
-        Ellipse(hdc, max.x - abs(min.x - max.x) / 6, min.y + abs(min.y - max.y) / 3,
-            max.x - abs(min.x - max.x) / 6 - 10, min.y + abs(min.y - max.y) / 3 + 20);
-        SelectObject(hdc, hBrushWhite);
-        Ellipse(hdc, min.x + abs(min.x - max.x) / 6 + 2, min.y + abs(min.y - max.y) / 3 + 2,
-            min.x + abs(min.x - max.x) / 6 + 8, min.y + abs(min.y - max.y) / 3 + 8);
-        Ellipse(hdc, max.x - abs(min.x - max.x) / 6 - 2, min.y + abs(min.y - max.y) / 3 + 2,
-            max.x - abs(min.x - max.x) / 6 - 8, min.y + abs(min.y - max.y) / 3 + 8);
-
-    }
-
-    // 스페이스바가 눌렸을 때
-    else {
-        MoveToEx(hdc, min.x + (max.x - min.x) / 6, min.y + (max.y - min.y) / 3, NULL);
-        LineTo(hdc, min.x + (max.x - min.x) / 6 - 10, min.y + (max.y - min.y) / 3 - 10);
-        MoveToEx(hdc, min.x + (max.x - min.x) / 6, min.y + (max.y - min.y) / 3, NULL);
-        LineTo(hdc, min.x + (max.x - min.x) / 6 - 10, min.y + (max.y - min.y) / 3 + 10);
-
-        MoveToEx(hdc, max.x - (max.x - min.x) / 6, min.y + (max.y - min.y) / 3, NULL);
-        LineTo(hdc, max.x - (max.x - min.x) / 6 + 10, min.y + (max.y - min.y) / 3 - 10);
-        MoveToEx(hdc, max.x - (max.x - min.x) / 6, min.y + (max.y - min.y) / 3, NULL);
-        LineTo(hdc, max.x - (max.x - min.x) / 6 + 10, min.y + (max.y - min.y) / 3 + 10);
-    }
-
-    // 입 그리기
-    HBRUSH hBrush3 = CreateSolidBrush(RGB(255, 150, 255));
-    SelectObject(hdc, hBrush3);
-    Ellipse(hdc, min.x + abs(min.x - max.x) / 2 - 15, min.y + abs(min.y - max.y) / 3 + 40,
-        min.x + abs(min.x - max.x) / 2 + 15, min.y + abs(min.y - max.y) / 3 + 100);
-
-    // 코 그리기
-    HBRUSH hBrush4 = CreateSolidBrush(RGB(255, 255, 255));
-    SelectObject(hdc, hBrush4);
-    Ellipse(hdc, min.x + abs(min.x - max.x) / 2, min.y + abs(min.y - max.y) / 3 + 40,
-        min.x + abs(min.x - max.x) / 2 - 40, min.y + abs(min.y - max.y) / 3 + 80);
-    Ellipse(hdc, min.x + abs(min.x - max.x) / 2, min.y + abs(min.y - max.y) / 3 + 40,
-        min.x + abs(min.x - max.x) / 2 + 40, min.y + abs(min.y - max.y) / 3 + 80);
-
-    SelectObject(hdc, hBrush2);
-    Ellipse(hdc, min.x + abs(min.x - max.x) / 2 - 15, min.y + abs(min.y - max.y) / 3 + 30,
-        min.x + abs(min.x - max.x) / 2 + 15, min.y + abs(min.y - max.y) / 2 + 30);
-
-    // 수염 그리기
-    MoveToEx(hdc, min.x + (max.x - min.x) / 2 - 25, min.y + (max.y - min.y) / 3 * 2 - 10, NULL);
-    LineTo(hdc, min.x + (max.x - min.x) / 2 - 60, min.y + (max.y - min.y) / 3 * 2 - 20);
-    MoveToEx(hdc, min.x + (max.x - min.x) / 2 - 25, min.y + (max.y - min.y) / 3 * 2, NULL);
-    LineTo(hdc, min.x + (max.x - min.x) / 2 - 60, min.y + (max.y - min.y) / 3 * 2 + 10);
-
-    MoveToEx(hdc, min.x + (max.x - min.x) / 2 + 25, min.y + (max.y - min.y) / 3 * 2 - 10, NULL);
-    LineTo(hdc, min.x + (max.x - min.x) / 2 + 60, min.y + (max.y - min.y) / 3 * 2 - 20);
-    MoveToEx(hdc, min.x + (max.x - min.x) / 2 + 25, min.y + (max.y - min.y) / 3 * 2, NULL);
-    LineTo(hdc, min.x + (max.x - min.x) / 2 + 60, min.y + (max.y - min.y) / 3 * 2 + 10);
-
-
-    DeleteObject(hBrush);
-    DeleteObject(hBrush2);
-    DeleteObject(hBrush3);
-    DeleteObject(hBrush4);
-    //}
-}
-
-// 라이언 그리는 함수
-void DrawRyan(HDC hdc) {
-    MaxMin();
-
-    int lenX = max.x - min.x;
-    int lenY = max.y - min.y;
-
-    if (isDrawArea()) {
-        HBRUSH hBrush = CreateSolidBrush(RGB(255, 200, 15));
-        HBRUSH hBrush2 = CreateSolidBrush(RGB(0, 0, 0));
-        HBRUSH hBrush3 = CreateSolidBrush(RGB(255, 255, 255));
-        if (endPoint.y > startPoint.y) {
-            SelectObject(hdc, hBrush);
-            // 귀 그리기
-            Ellipse(hdc, min.x, min.y, min.x + lenX / 4, min.y + lenY / 4);
-            Ellipse(hdc, max.x - lenX / 4, min.y, max.x, min.y + lenY / 4);
-            // 얼굴 그리기
-            Ellipse(hdc, min.x, min.y, max.x, max.y);
-
-            SelectObject(hdc, hBrush2);
-            // 눈썹 그리기
-            MoveToEx(hdc, min.x + lenX / 4 + (lenX / 4) / 2, min.y + lenY / 4 + (lenY / 4) / 10, NULL);
-            LineTo(hdc, min.x + lenX / 4 - (lenX / 4) / 2, min.y + lenY / 4 + (lenY / 4) / 10);
-            MoveToEx(hdc, min.x + lenX / 4 + (lenX / 4) / 2, min.y + lenY / 4 + (lenY / 4) / 10 * 2, NULL);
-            LineTo(hdc, min.x + lenX / 4 - (lenX / 4) / 2, min.y + lenY / 4 + (lenY / 4) / 10 * 2);
-            MoveToEx(hdc, min.x + lenX / 4 + (lenX / 4) / 2, min.y + lenY / 4 + (lenY / 4) / 10 * 3, NULL);
-            LineTo(hdc, min.x + lenX / 4 - (lenX / 4) / 2, min.y + lenY / 4 + (lenY / 4) / 10 * 3);
-
-            MoveToEx(hdc, max.x - lenX / 4 + (lenX / 4) / 2, min.y + lenY / 4 + (lenY / 4) / 10, NULL);
-            LineTo(hdc, max.x - lenX / 4 - (lenX / 4) / 2, min.y + lenY / 4 + (lenY / 4) / 10);
-            MoveToEx(hdc, max.x - lenX / 4 + (lenX / 4) / 2, min.y + lenY / 4 + (lenY / 4) / 10 * 2, NULL);
-            LineTo(hdc, max.x - lenX / 4 - (lenX / 4) / 2, min.y + lenY / 4 + (lenY / 4) / 10 * 2);
-            MoveToEx(hdc, max.x - lenX / 4 + (lenX / 4) / 2, min.y + lenY / 4 + (lenY / 4) / 10 * 3, NULL);
-            LineTo(hdc, max.x - lenX / 4 - (lenX / 4) / 2, min.y + lenY / 4 + (lenY / 4) / 10 * 3);
-
-            // 눈 그리기
-            Ellipse(hdc, min.x + lenX / 4 - (((lenX / 4) / 10 * 2) - lenX / 4 > 13 ? 2 : ((lenX / 4) / 10)),
-                min.y + lenY / 4 + (lenY / 4 / 2) + (((lenY / 4) / 10 * 2) > 13 ? 5 : ((lenY / 4) / 10)),
-                min.x + lenX / 4 + (((lenX / 4) / 10 * 2) - lenX / 4 > 13 ? 4 : ((lenX / 4) / 10 * 2)),
-                min.y + lenY / 4 + (lenY / 4 / 2) + (((lenY / 4) / 10 * 2) > 13 ? 20 : ((lenY / 4) / 10 * 2) * 2));
-            Ellipse(hdc, max.x - lenX / 4 - (((lenX / 4) / 10 * 2) - lenX / 4 > 13 ? 2 : ((lenX / 4) / 10)),
-                min.y + lenY / 4 + (lenY / 4 / 2) + (((lenY / 4) / 10 * 2) > 13 ? 5 : ((lenY / 4) / 10)),
-                max.x - lenX / 4 + (((lenX / 4) / 10 * 2) - lenX / 4 > 13 ? 4 : ((lenX / 4) / 10 * 2)),
-                min.y + lenY / 4 + (lenY / 4 / 2) + (((lenY / 4) / 10 * 2) > 13 ? 20 : ((lenY / 4) / 10 * 2) * 2));
-
-            SelectObject(hdc, hBrush3);
-
-            // 코 그리기
-            Ellipse(hdc, min.x + lenX / 2 - (lenX / 7),
-                min.y + lenY / 2 + (lenY / 10),
-                min.x + lenX / 2,
-                min.y + lenY / 2 + (lenY / 10) * 2);
-            Ellipse(hdc, min.x + lenX / 2 + (lenX / 7),
-                min.y + lenY / 2 + (lenY / 10),
-                min.x + lenX / 2,
-                min.y + lenY / 2 + (lenY / 10) * 2);
-        }
-        else {
-            SelectObject(hdc, hBrush);
-            // 귀 그리기
-            Ellipse(hdc, min.x, max.y, min.x + lenX / 4, max.y - lenY / 4);
-            Ellipse(hdc, max.x - lenX / 4, max.y, max.x, max.y - lenY / 4);
-            // 얼굴 그리기
-            Ellipse(hdc, min.x, min.y, max.x, max.y);
-
-            SelectObject(hdc, hBrush2);
-            // 눈썹 그리기
-            MoveToEx(hdc, min.x + lenX / 4 + (lenX / 4) / 2, max.y - lenY / 4 - (lenY / 4) / 10, NULL);
-            LineTo(hdc, min.x + lenX / 4 - (lenX / 4) / 2, max.y - lenY / 4 - (lenY / 4) / 10);
-            MoveToEx(hdc, min.x + lenX / 4 + (lenX / 4) / 2, max.y - lenY / 4 - (lenY / 4) / 10 * 2, NULL);
-            LineTo(hdc, min.x + lenX / 4 - (lenX / 4) / 2, max.y - lenY / 4 - (lenY / 4) / 10 * 2);
-            MoveToEx(hdc, min.x + lenX / 4 + (lenX / 4) / 2, max.y - lenY / 4 - (lenY / 4) / 10 * 3, NULL);
-            LineTo(hdc, min.x + lenX / 4 - (lenX / 4) / 2, max.y - lenY / 4 - (lenY / 4) / 10 * 3);
-
-            MoveToEx(hdc, max.x - lenX / 4 + (lenX / 4) / 2, max.y - lenY / 4 - (lenY / 4) / 10, NULL);
-            LineTo(hdc, max.x - lenX / 4 - (lenX / 4) / 2, max.y - lenY / 4 - (lenY / 4) / 10);
-            MoveToEx(hdc, max.x - lenX / 4 + (lenX / 4) / 2, max.y - lenY / 4 - (lenY / 4) / 10 * 2, NULL);
-            LineTo(hdc, max.x - lenX / 4 - (lenX / 4) / 2, max.y - lenY / 4 - (lenY / 4) / 10 * 2);
-            MoveToEx(hdc, max.x - lenX / 4 + (lenX / 4) / 2, max.y - lenY / 4 - (lenY / 4) / 10 * 3, NULL);
-            LineTo(hdc, max.x - lenX / 4 - (lenX / 4) / 2, max.y - lenY / 4 - (lenY / 4) / 10 * 3);
-
-            // 눈 그리기
-            Ellipse(hdc, min.x + lenX / 4 - (((lenX / 4) / 10 * 2) - lenX / 4 > 13 ? 2 : ((lenX / 4) / 10)),
-                max.y - lenY / 4 - (lenY / 4 / 2) - (((lenY / 4) / 10 * 2) > 13 ? 5 : ((lenY / 4) / 10)),
-                min.x + lenX / 4 + (((lenX / 4) / 10 * 2) - lenX / 4 > 13 ? 4 : ((lenX / 4) / 10 * 2)),
-                max.y - lenY / 4 - (lenY / 4 / 2) - (((lenY / 4) / 10 * 2) > 13 ? 20 : ((lenY / 4) / 10 * 2) * 2));
-            Ellipse(hdc, max.x - lenX / 4 - (((lenX / 4) / 10 * 2) - lenX / 4 > 13 ? 2 : ((lenX / 4) / 10)),
-                max.y - lenY / 4 - (lenY / 4 / 2) - (((lenY / 4) / 10 * 2) > 13 ? 5 : ((lenY / 4) / 10)),
-                max.x - lenX / 4 + (((lenX / 4) / 10 * 2) - lenX / 4 > 13 ? 4 : ((lenX / 4) / 10 * 2)),
-                max.y - lenY / 4 - (lenY / 4 / 2) - (((lenY / 4) / 10 * 2) > 13 ? 20 : ((lenY / 4) / 10 * 2) * 2));
-
-            SelectObject(hdc, hBrush3);
-
-            // 코 그리기
-            Ellipse(hdc, min.x + lenX / 2 - (lenX / 7),
-                max.y - lenY / 2,
-                min.x + lenX / 2,
-                max.y - lenY / 2 - (lenY / 10));
-            Ellipse(hdc, min.x + lenX / 2 + (lenX / 7),
-                max.y - lenY / 2,
-                min.x + lenX / 2,
-                max.y - lenY / 2 - (lenY / 10));
-        }
-
-        DeleteObject(hBrush);
-        DeleteObject(hBrush2);
-        DeleteObject(hBrush3);
-    }
-}
-
-void DrawShape(HDC hdc, Draw shape) {
+void DrawShape(HWND hWnd, HDC hdc, Draw shape) {
     switch (shape)
     {
     case BOX: // Box 선택
@@ -358,12 +168,12 @@ void DrawShape(HDC hdc, Draw shape) {
     case CUBE: // Cube 선택
         DrawCube(hdc, startPoint, endPoint);
         break;
-    case BONOBONO: // Bonobono 선택
-        DrawBonobono(hdc);
-        break;
-    case RYAN: // Ryan 선택
-        DrawRyan(hdc);
-        break;
+    //case BONOBONO: // Bonobono 선택
+    //    DrawBonobono(hWnd, hdc, blink);
+    //    break;
+    //case RYAN: // Ryan 선택
+    //    DrawRyan(hWnd, hdc, startPoint.x, startPoint.y, endPoint.x, endPoint.y);
+    //    break;
     default:
         break;
     }
@@ -473,14 +283,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
     }
     case WM_KEYDOWN:
         if (wParam == VK_SPACE) {
-            isSpacebar = true;
+            //isSpacebar = true;
+            blink = 1;
             if (shape == BONOBONO) {
                 InvalidateRect(hWnd, NULL, TRUE);
             }
         }
         break;
     case WM_KEYUP:
-        isSpacebar = false;
+        //isSpacebar = false;
+        blink = 0;
         if (shape == BONOBONO) {
             InvalidateRect(hWnd, NULL, TRUE);
         }
@@ -495,7 +307,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
         FrameRect(hdc, &drawArea, hBrush); // drawArea 테두리 그리기
         FillRect(hdc, &drawArea, CreateSolidBrush(RGB(255, 255, 255))); // 흰 배경으로 채우기
 
-        DrawShape(hdc, shape);
+        DrawShape(hWnd, hdc, shape);
+
+        if (shape == BONOBONO) {
+            DrawBonobono(hWnd, hdc, blink);
+        }
+
+        if (shape == RYAN) {
+            DrawRyan(hWnd, hdc, startPoint.x, startPoint.y, endPoint.x, endPoint.y);
+        }
 
         DeleteObject(hBrush);
         EndPaint(hWnd, &ps);

@@ -78,19 +78,19 @@ void DrawBonobono(HWND hWnd, HDC hdc, int blink) {
 }
 
 void DrawRyan(HWND hWnd, HDC hdc, int left, int top, int right, int bottom) {
-	int maxX = left > right ? left : right;
-	int minX = left > right ? right : left;
-	int maxY = top > bottom ? top : bottom;
-	int minY = top > bottom ? bottom : top;
+    int maxX = left > right ? left : right;
+    int minX = left > right ? right : left;
+    int maxY = top > bottom ? top : bottom;
+    int minY = top > bottom ? bottom : top;
 
-	int lenX = maxX - minX;
-	int lenY = maxY - minY;
+    int lenX = maxX - minX;
+    int lenY = maxY - minY;
 
-	HBRUSH brown = CreateSolidBrush(RGB(255, 200, 15));
-	HBRUSH black = CreateSolidBrush(RGB(0, 0, 0));
-	HBRUSH white = CreateSolidBrush(RGB(255, 255, 255));
+    HBRUSH brown = CreateSolidBrush(RGB(255, 200, 15));
+    HBRUSH black = CreateSolidBrush(RGB(0, 0, 0));
+    HBRUSH white = CreateSolidBrush(RGB(255, 255, 255));
 
-	if (bottom > top) {
+    if (bottom > top) {
         SelectObject(hdc, brown);
         // ±Í ±×¸®±â
         Ellipse(hdc, minX, minY, minX + lenX / 4, minY + lenY / 4);
@@ -135,8 +135,8 @@ void DrawRyan(HWND hWnd, HDC hdc, int left, int top, int right, int bottom) {
             minY + lenY / 2 + (lenY / 10),
             minX + lenX / 2,
             minY + lenY / 2 + (lenY / 10) * 2);
-	}
-	else {
+    }
+    else {
         SelectObject(hdc, brown);
         // ±Í ±×¸®±â
         Ellipse(hdc, minX, maxY, minX + lenX / 4, maxY - lenY / 4);
@@ -181,7 +181,7 @@ void DrawRyan(HWND hWnd, HDC hdc, int left, int top, int right, int bottom) {
             maxY - lenY / 2,
             minX + lenX / 2,
             maxY - lenY / 2 - (lenY / 10));
-	}
+    }
 
     DeleteObject(brown);
     DeleteObject(black);

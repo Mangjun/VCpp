@@ -1,5 +1,141 @@
 #include "yuhanCG.h"
 
+void DrawShape(HWND hWnd, HDC hdc, POINT start, POINT end, Draw shape, int blink) {
+    switch (shape)
+    {
+    case BOX: // Box 선택
+        DrawBoxCircle(hdc, start, end, shape);
+        break;
+    case CIRCLE: // Circle 선택
+        DrawBoxCircle(hdc, start, end, shape);
+        break;
+    case CUBE: // Cube 선택
+        DrawCube(hdc, start, end);
+        break;
+    case BONOBONO: // Bonobono 선택
+        DrawBonobono(hWnd, hdc, blink);
+        break;
+    case RYAN: // Ryan 선택
+        DrawRyan(hWnd, hdc, start.x, start.y, end.x, end.y);
+        break;
+    default:
+        break;
+    }
+}
+
+void DrawBoxCircle(HDC hdc, POINT start, POINT end, Draw shape) {
+    POINT max, min;
+    max.x = start.x > end.x ? start.x : end.x;
+    max.y = start.y > end.y ? start.y : end.y;
+
+    min.x = start.x < end.x ? start.x : end.x;
+    min.y = start.y < end.y ? start.y : end.y;
+
+    if (!(min.x >= 16 && max.x >= 16 && min.y >= 112 && max.y >= 112 &&
+        min.x <= 784 && max.x <= 784 && min.y <= 464 && max.y <= 464)) {
+        return;
+    }
+
+    HBRUSH hBrush = CreateSolidBrush(RGB(255, 255, 255));
+    SelectObject(hdc, hBrush);
+    if (shape == Draw::BOX) {
+        Rectangle(hdc, min.x, min.y, max.x, max.y);
+    }
+    else if (shape == Draw::CIRCLE) {
+        Ellipse(hdc, min.x, min.y, max.x, max.y);
+    }
+    DeleteObject(hBrush);
+}
+
+void DrawCube(HDC hdc, const POINT start, const POINT end) {
+    POINT max, min;
+    max.x = start.x > end.x ? start.x : end.x;
+    max.y = start.y > end.y ? start.y : end.y;
+
+    min.x = start.x < end.x ? start.x : end.x;
+    min.y = start.y < end.y ? start.y : end.y;
+
+    if (!(min.x >= 16 && max.x >= 16 && min.y >= 112 && max.y >= 112 &&
+        min.x <= 784 && max.x <= 784 && min.y <= 464 && max.y <= 464)) {
+        return;
+    }
+
+    HBRUSH hBrush = CreateSolidBrush(RGB(255, 255, 255));
+    SelectObject(hdc, hBrush);
+
+    Rectangle(hdc, min.x, min.y, max.x, max.y);
+
+    if (end.x > start.x && end.y > start.y) {
+        MoveToEx(hdc, min.x, min.y, NULL);
+        LineTo(hdc, min.x + (max.x - min.x) / 4, min.y - (max.y - min.y) / 4);
+        LineTo(hdc, max.x + (max.x - min.x) / 4, min.y - (max.y - min.y) / 4);
+        LineTo(hdc, max.x, min.y);
+
+        MoveToEx(hdc, min.x, max.y, NULL);
+        LineTo(hdc, min.x + (max.x - min.x) / 4, max.y - (max.y - min.y) / 4);
+        LineTo(hdc, max.x + (max.x - min.x) / 4, max.y - (max.y - min.y) / 4);
+        LineTo(hdc, max.x, max.y);
+
+        MoveToEx(hdc, min.x + (max.x - min.x) / 4, min.y - (max.y - min.y) / 4, NULL);
+        LineTo(hdc, min.x + (max.x - min.x) / 4, max.y - (max.y - min.y) / 4);
+
+        MoveToEx(hdc, max.x + (max.x - min.x) / 4, min.y - (max.y - min.y) / 4, NULL);
+        LineTo(hdc, max.x + (max.x - min.x) / 4, max.y - (max.y - min.y) / 4);
+    }
+    else if (end.x > start.x && end.y < start.y) {
+        MoveToEx(hdc, min.x, min.y, NULL);
+        LineTo(hdc, min.x + (max.x - min.x) / 4, min.y - (max.y - min.y) / 4);
+        LineTo(hdc, max.x + (max.x - min.x) / 4, min.y - (max.y - min.y) / 4);
+        LineTo(hdc, max.x, min.y);
+
+        MoveToEx(hdc, min.x, max.y, NULL);
+        LineTo(hdc, min.x + (max.x - min.x) / 4, max.y - (max.y - min.y) / 4);
+        LineTo(hdc, max.x + (max.x - min.x) / 4, max.y - (max.y - min.y) / 4);
+        LineTo(hdc, max.x, max.y);
+
+        MoveToEx(hdc, min.x + (max.x - min.x) / 4, min.y - (max.y - min.y) / 4, NULL);
+        LineTo(hdc, min.x + (max.x - min.x) / 4, max.y - (max.y - min.y) / 4);
+
+        MoveToEx(hdc, max.x + (max.x - min.x) / 4, min.y - (max.y - min.y) / 4, NULL);
+        LineTo(hdc, max.x + (max.x - min.x) / 4, max.y - (max.y - min.y) / 4);
+    }
+    else if (end.x < start.x && end.y > start.y) {
+        MoveToEx(hdc, min.x, min.y, NULL);
+        LineTo(hdc, min.x - (max.x - min.x) / 4, min.y - (max.y - min.y) / 4);
+        LineTo(hdc, max.x - (max.x - min.x) / 4, min.y - (max.y - min.y) / 4);
+        LineTo(hdc, max.x, min.y);
+
+        MoveToEx(hdc, min.x, max.y, NULL);
+        LineTo(hdc, min.x - (max.x - min.x) / 4, max.y - (max.y - min.y) / 4);
+        LineTo(hdc, max.x - (max.x - min.x) / 4, max.y - (max.y - min.y) / 4);
+        LineTo(hdc, max.x, max.y);
+
+        MoveToEx(hdc, min.x - (max.x - min.x) / 4, min.y - (max.y - min.y) / 4, NULL);
+        LineTo(hdc, min.x - (max.x - min.x) / 4, max.y - (max.y - min.y) / 4);
+
+        MoveToEx(hdc, max.x - (max.x - min.x) / 4, min.y - (max.y - min.y) / 4, NULL);
+        LineTo(hdc, max.x - (max.x - min.x) / 4, max.y - (max.y - min.y) / 4);
+    }
+    else {
+        MoveToEx(hdc, min.x, min.y, NULL);
+        LineTo(hdc, min.x - (max.x - min.x) / 4, min.y - (max.y - min.y) / 4);
+        LineTo(hdc, max.x - (max.x - min.x) / 4, min.y - (max.y - min.y) / 4);
+        LineTo(hdc, max.x, min.y);
+
+        MoveToEx(hdc, min.x, max.y, NULL);
+        LineTo(hdc, min.x - (max.x - min.x) / 4, max.y - (max.y - min.y) / 4);
+        LineTo(hdc, max.x - (max.x - min.x) / 4, max.y - (max.y - min.y) / 4);
+        LineTo(hdc, max.x, max.y);
+
+        MoveToEx(hdc, min.x - (max.x - min.x) / 4, min.y - (max.y - min.y) / 4, NULL);
+        LineTo(hdc, min.x - (max.x - min.x) / 4, max.y - (max.y - min.y) / 4);
+
+        MoveToEx(hdc, max.x - (max.x - min.x) / 4, min.y - (max.y - min.y) / 4, NULL);
+        LineTo(hdc, max.x - (max.x - min.x) / 4, max.y - (max.y - min.y) / 4);
+    }
+    DeleteObject(hBrush);
+}
+
 void DrawBonobono(HWND hWnd, HDC hdc, int blink) {
     int minX = 280;
     int maxX = 480;
@@ -82,6 +218,11 @@ void DrawRyan(HWND hWnd, HDC hdc, int left, int top, int right, int bottom) {
     int minX = left > right ? right : left;
     int maxY = top > bottom ? top : bottom;
     int minY = top > bottom ? bottom : top;
+
+    if (!(minX >= 16 && maxX >= 16 && minY >= 112 && maxY >= 112 &&
+        minX <= 784 && maxX <= 784 && minY <= 464 && maxY <= 464)) {
+        return;
+    }
 
     int lenX = maxX - minX;
     int lenY = maxY - minY;
@@ -186,4 +327,30 @@ void DrawRyan(HWND hWnd, HDC hdc, int left, int top, int right, int bottom) {
     DeleteObject(brown);
     DeleteObject(black);
     DeleteObject(white);
+}
+
+bool isDrawArea(POINT start, POINT end, RECT drawArea) {
+    return start.x >= drawArea.left && end.x >= drawArea.left &&
+        start.y >= drawArea.top && end.y >= drawArea.top &&
+        start.x <= drawArea.right && end.x <= drawArea.right &&
+        start.y <= drawArea.bottom && end.y <= drawArea.bottom;
+}
+
+bool IsMouseInBox(POINT last, POINT start, POINT end) {
+    if (end.x > start.x && end.y > start.y) {
+        return (last.x >= start.x && last.x <= end.x &&
+            last.y >= start.y && last.y <= end.y);
+    }
+    else if (end.x > start.x && end.y < start.y) {
+        return (last.x >= start.x && last.x <= end.x &&
+            last.y <= start.y && last.y >= end.y);
+    }
+    else if (end.x < start.x && end.y > start.y) {
+        return (last.x <= start.x && last.x >= end.x &&
+            last.y >= start.y && last.y <= end.y);
+    }
+    else {
+        return (last.x <= start.x && last.x >= end.x &&
+            last.y <= start.y && last.y >= end.y);
+    }
 }
